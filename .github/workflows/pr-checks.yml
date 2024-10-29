@@ -16,11 +16,13 @@ jobs:
           python-version: '3.11'
           
       - name: Install linting tools
+        working-directory: .
         run: |
           python -m pip install --upgrade pip
           pip install flake8 black isort
           
       - name: Run linters
+        working-directory: .
         run: |
           black --check .
           flake8 .
@@ -38,9 +40,11 @@ jobs:
           python-version: '3.11'
           
       - name: Install dependencies
+        working-directory: .
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           
       - name: Run tests
+        working-directory: .
         run: pytest
