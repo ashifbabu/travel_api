@@ -19,6 +19,7 @@ app.include_router(train_router, prefix="/api/v1/trains")
 app.include_router(event_router, prefix="/api/v1/events")
 app.include_router(insurance_router, prefix="/api/v1/insurance")
 
+
 @app.get("/")
 async def root():
     return {"message": "Welcome to the Travel API"}
