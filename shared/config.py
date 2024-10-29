@@ -1,8 +1,12 @@
 from dotenv import load_dotenv
 import os
 
+# Load environment variables from .env file
 load_dotenv()
 
-API_KEY = os.getenv('API_KEY')
-CLIENT_SECRET = os.getenv('CLIENT_SECRET')
+# Get environment variables with fallbacks
+API_KEY = os.getenv('API_KEY', 'default_api_key')
+CLIENT_SECRET = os.getenv('CLIENT_SECRET', 'default_client_secret')
+CLIENT_ID = os.getenv('CLIENT_ID', 'default_client_id')
+TOKEN_URL = os.getenv('TOKEN_URL', 'https://api.example.com/oauth/token')
 
