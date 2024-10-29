@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: your-api-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: your-api
+  template:
+    metadata:
+      labels:
+        app: your-api
+    spec:
+      containers:
+      - name: your-api-container
+        image: your-api-image:tag
+        env:
+        - name: API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: api-secrets
+              key: API_KEY
+        - name: CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: api-secrets
+              key: CLIENT_SECRET

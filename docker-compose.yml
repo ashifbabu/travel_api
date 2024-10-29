@@ -1,0 +1,168 @@
+version: '3.8'
+
+services:
+  flight_service:
+    build: ./services/flight_service
+    ports:
+      - "8001:8000"
+    environment:
+      - MONGODB_URI=mongodb://mongodb:27017/flights
+
+  hotel_service:
+    build: ./services/hotel_service
+    ports:
+      - "8002:8000"
+    environment:
+      - DATABASE_URL=postgresql://user:password@postgres:5432/hotels
+
+  car_service:
+    build: ./services/car_service
+    ports:
+      - "8003:8000"
+    environment:
+      - DYNAMODB_ENDPOINT=http://dynamodb-local:8000
+
+  holiday_service:
+    build: ./services/holiday_service
+    ports:
+      - "8004:8000"
+    environment:
+      - MYSQL_URI=mysql://user:password@mysql:3306/holidays
+
+  bus_service:
+    build: ./services/bus_service
+    ports:
+      - "8005:8000"
+    environment:
+      - MONGODB_URI=mongodb://mongodb:27017/buses
+
+  train_service:
+    build: ./services/train_service
+    ports:
+      - "8006:8000"
+    environment:
+      - DATABASE_URL=postgresql://user:password@postgres:5432/trains
+
+  insurance_service:
+    build: ./services/insurance_service
+    ports:
+      - "8007:8000"
+    environment:
+      - DYNAMODB_ENDPOINT=http://dynamodb-local:8000
+
+  event_service:
+    build: ./services/event_service
+    ports:
+      - "8008:8000"
+    environment:
+      - MONGODB_URI=mongodb://mongodb:27017/events
+
+  api_gateway:
+    build: ./api_gateway
+    ports:
+      - "8000:8000"
+    depends_on:
+      - flight_service
+      - hotel_service
+      - car_service
+      - holiday_service
+      - bus_service
+      - train_service
+      - insurance_service
+      - event_service
+
+  mongodb:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+
+  postgres:
+    image: postgres:13
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=travel
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  dynamodb-local:
+    image: amazon/dynamodb-local
+    ports:
+      - "8000:8000"
+
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+  mysql:
+    image: mysql:8
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpassword
+      - MYSQL_DATABASE=holidays
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=user
+      - RABBITMQ_DEFAULT_PASS=password
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.14.0
+    environment:
+      - discovery.type=single-node
+    ports:
+      - "9200:9200"
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.14.0
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
+
+volumes:
+  mongodb_data:
+  postgres_data:
+  redis_data:
+  mysql_data:
+  elasticsearch_data:
+
+   version: '3'
+   services:
+     api_service:
+       build: .
+       environment:
+         - API_KEY=${API_KEY}
+         - CLIENT_SECRET=${CLIENT_SECRET}
