@@ -2,3 +2,7 @@ pytest
 requests
 python-dotenv
 responses
+boto3
+black
+flake8
+isort
