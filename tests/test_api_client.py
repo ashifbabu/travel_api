@@ -1,9 +1,10 @@
-import pytest
-import responses
-import requests  # Add this import
-from unittest.mock import patch, Mock
-import sys
 import os
+import sys
+from unittest.mock import Mock, patch
+
+import pytest
+import requests  # Add this import
+import responses
 from dotenv import load_dotenv
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))

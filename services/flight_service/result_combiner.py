@@ -52,7 +52,9 @@ def combine_results(flyhub_results, bdfare_results):
                             "airline": segment["paxSegment"]["marketingCarrierInfo"][
                                 "carrierName"
                             ],
-                            "flight_number": f"{segment['paxSegment']['marketingCarrierInfo']['carrierDesigCode']}{segment['paxSegment']['flightNumber']}",
+                            "flight_number": f"{segment['paxSegment']['marketingCarrierInfo']
+                                                        ['carrierDesigCode']}{segment['paxSegment']
+                                                        ['flightNumber']}",
                             "departure_time": segment["paxSegment"]["departure"][
                                 "aircraftScheduledDateTime"
                             ],

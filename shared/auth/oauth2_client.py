@@ -1,7 +1,9 @@
-import requests
-from typing import Dict, Any, Optional
 from datetime import datetime, timedelta
-from ..config import API_KEY, CLIENT_SECRET  # If using environment variables
+from typing import Dict, Any
+
+import requests
+
+from ..config import CLIENT_SECRET
 
 try:
     from ..secrets_manager import get_secret  # Optional AWS Secrets Manager
