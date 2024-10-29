@@ -1,12 +1,12 @@
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Union
 
 
 class StandardResponse:
     def __init__(
         self,
         status: str,
-        data: Optional[Any] = None,
-        errors: Optional[Dict[str, Any]] = None,
+        data: Any,
+        errors: Union[str, List[str]],
     ):
         self.status = status
         self.data = data
@@ -16,9 +16,19 @@ class StandardResponse:
         return {"status": self.status, "data": self.data, "errors": self.errors}
 
 
-def success_response(data: Dict[str, Any]) -> Dict[str, Any]:
-    return {"status": "success", "data": data}
+def success_response(data: Any) -> Dict[str, Any]:
+    return {
+        "status": "success",
+        "data": data
+    }
 
 
-def error_response(error_message: str) -> Dict[str, Any]:
-    return {"status": "error", "errors": [error_message]}
+def error_response(error: Union[str, List[str]]) -> Dict[str, Any]:
+    if isinstance(error, str):
+        errors = [error]
+    else:
+        errors = error
+    return {
+        "status": "error",
+        "errors": errors
+    }

@@ -36,11 +36,11 @@ jobs:
     needs: quality
     
     env:
-      API_KEY: test_k3y_12345abcdef67890
-      CLIENT_SECRET: cs_test_98765432dcba09876
-      CLIENT_ID: client_test_id_54321
-      TOKEN_URL: https://api.example.com/oauth/token
-      BASE_URL: https://api.example.com/v1
+      API_KEY: ${{ secrets.API_KEY }}
+      CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+      CLIENT_ID: ${{ secrets.CLIENT_ID }}
+      TOKEN_URL: ${{ secrets.TOKEN_URL }}
+      BASE_URL: ${{ secrets.BASE_URL }}
     
     steps:
       - uses: actions/checkout@v4
