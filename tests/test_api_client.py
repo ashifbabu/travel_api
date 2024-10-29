@@ -13,6 +13,7 @@ from shared.auth.oauth2_client import OAuth2Client
 # Load environment variables
 load_dotenv()
 
+
 class MockRetryWithBackoff:
     def __call__(self, *args, **kwargs):
         def decorator(func):
