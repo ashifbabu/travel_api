@@ -14,8 +14,10 @@ def retry_with_backoff(retries: int = 3, backoff_in_seconds: int = 1) -> Callabl
                 except Exception as e:
                     if x == retries:
                         raise e
-                    sleep = (backoff_in_seconds * 2 ** x)
+                    sleep = backoff_in_seconds * 2**x
                     time.sleep(sleep)
                     x += 1
+
         return wrapper
+
     return decorator

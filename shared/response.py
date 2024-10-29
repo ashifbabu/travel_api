@@ -17,10 +17,7 @@ class StandardResponse:
 
 
 def success_response(data: Any) -> Dict[str, Any]:
-    return {
-        "status": "success",
-        "data": data
-    }
+    return {"status": "success", "data": data}
 
 
 def error_response(error: Union[str, List[str]]) -> Dict[str, Any]:
@@ -28,7 +25,4 @@ def error_response(error: Union[str, List[str]]) -> Dict[str, Any]:
         errors = [error]
     else:
         errors = error
-    return {
-        "status": "error",
-        "errors": errors
-    }
+    return {"status": "error", "errors": errors}
