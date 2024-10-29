@@ -4,6 +4,7 @@ from urllib.parse import urlparse
 import requests
 
 from shared.auth.oauth2_client import OAuth2Client
+
 from .config import API_KEY
 from .response import error_response, success_response
 from .retry import retry_with_backoff

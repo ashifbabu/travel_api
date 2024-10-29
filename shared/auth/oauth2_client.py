@@ -1,7 +1,6 @@
-from datetime import datetime, timedelta
-from typing import Dict, Any
-
 import requests
+from datetime import datetime, timedelta
+from typing import Any, Dict
 
 from ..config import CLIENT_SECRET
 
