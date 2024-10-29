@@ -1,6 +1,6 @@
+import random
 import time
 from functools import wraps
-import random
 
 
 def retry_with_backoff(retries=3, backoff_in_seconds=1):

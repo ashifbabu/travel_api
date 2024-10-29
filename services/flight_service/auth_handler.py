@@ -1,5 +1,6 @@
-import httpx
 import os
+
+import httpx
 from fastapi import HTTPException
 
 FLYHUB_SANDBOX_URL = "http://api.sandbox.flyhub.com/api/v1/"

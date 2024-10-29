@@ -1,9 +1,10 @@
-from fastapi import APIRouter, HTTPException
 import httpx
-from .flyhub_adapter import prepare_flyhub_request
+from fastapi import APIRouter, HTTPException
+
+from .auth_handler import BDFARE_SANDBOX_URL, FLYHUB_SANDBOX_URL, get_auth_headers
 from .bdfare_adapter import prepare_bdfare_request
+from .flyhub_adapter import prepare_flyhub_request
 from .result_combiner import combine_results
-from .auth_handler import get_auth_headers, FLYHUB_SANDBOX_URL, BDFARE_SANDBOX_URL
 
 router = APIRouter()
 

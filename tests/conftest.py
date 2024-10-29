@@ -1,6 +1,7 @@
 import pytest
-from shared.auth.oauth2_client import OAuth2Client
+
 from shared.api_client import APIClient
+from shared.auth.oauth2_client import OAuth2Client
 
 
 @pytest.fixture
