@@ -7,9 +7,6 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        service: [flight-service, hotel-service, car-service]
     
     steps:
       - uses: actions/checkout@v4
@@ -20,21 +17,16 @@ jobs:
           python-version: '3.11'
           
       - name: Install dependencies
-        working-directory: services/${{ matrix.service }}
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           
       - name: Run tests
-        working-directory: services/${{ matrix.service }}
         run: pytest
 
   build-and-push:
     needs: test
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        service: [flight-service, hotel-service, car-service]
     
     steps:
       - uses: actions/checkout@v4
@@ -48,8 +40,8 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
-          context: ./services/${{ matrix.service }}
+          context: .
           push: true
           tags: |
-            your-org/${{ matrix.service }}:latest
-            your-org/${{ matrix.service }}:${{ github.sha }}
+            your-org/travel-api:latest
+            your-org/travel-api:${{ github.sha }}
