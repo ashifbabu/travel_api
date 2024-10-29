@@ -1,13 +1,12 @@
-import requests
-from shared.auth.oauth2_client import OAuth2Client
-from typing import Dict, Any, Optional
-from .exceptions import APIException
-from .retry import retry_with_backoff
-from .response import success_response, error_response
-from .config import API_KEY  # If using environment variables
-from .secrets_manager import get_secret  # If using AWS Secrets Manager
-import re
+from typing import Any, Dict, Optional
 from urllib.parse import urlparse
+
+import requests
+
+from shared.auth.oauth2_client import OAuth2Client
+from .config import API_KEY
+from .response import error_response, success_response
+from .retry import retry_with_backoff
 
 
 class APIClient:
@@ -32,8 +31,7 @@ class APIClient:
         url = f"{self.base_url}{endpoint}"
         headers = {
             "Authorization": f"Bearer {self.oauth2_client.get_access_token()}",
-            "API-Key": API_KEY,  # If using environment variables
-            # "API-Key": get_secret('your_api_key_secret_name')  # If using AWS Secrets Manager
+            "API-Key": self.api_key,
         }
 
         try:
@@ -68,5 +66,5 @@ class APIClient:
         try:
             result = urlparse(url)
             return all([result.scheme in ["http", "https"], result.netloc])
-        except:
+        except ValueError:
             return False
