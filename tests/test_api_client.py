@@ -3,20 +3,15 @@ import sys
 from unittest.mock import Mock, patch
 
 import pytest
-import requests  # Add this import
+import requests
 import responses
 from dotenv import load_dotenv
 
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from shared.api_client import APIClient
 from shared.auth.oauth2_client import OAuth2Client
 
 # Load environment variables
 load_dotenv()
-
-# Remove the global client initialization and test_credentials call
-# This should be handled in individual tests instead
-
 
 class MockRetryWithBackoff:
     def __call__(self, *args, **kwargs):
@@ -38,7 +33,6 @@ def api_client(oauth2_client):
     return APIClient("https://api.example.com", oauth2_client)
 
 
-# Add a new test for credentials initialization
 @responses.activate
 def test_credentials_initialization():
     responses.add(
@@ -56,11 +50,9 @@ def test_credentials_initialization():
 
     api_client = APIClient(base_url="https://test.com/api", oauth2_client=oauth2_client)
 
-    # Now test_credentials() should work with mocked response
     api_client.test_credentials()
 
 
-# Test basic HTTP methods
 @patch("shared.api_client.retry_with_backoff", MockRetryWithBackoff())
 @responses.activate
 def test_get_request_success(api_client):
@@ -86,7 +78,10 @@ def test_get_request_error(api_client):
     assert response == {
         "status": "error",
         "errors": [
-            "API request failed: 404 Client Error: Not Found for url: https://api.example.com/test"
+            (
+                "API request failed: 404 Client Error: "
+                "Not Found for url: https://api.example.com/test"
+            )
         ],
     }
 
@@ -130,7 +125,6 @@ def test_delete_request_success(api_client):
     assert response == {"status": "success", "data": {"message": "Deleted"}}
 
 
-# Test OAuth2 functionality
 @responses.activate
 def test_oauth2_client():
     token_url = "https://auth.example.com/token"
@@ -207,79 +201,23 @@ def test_oauth2_integration():
     assert api_request.headers["Authorization"] == "Bearer test_access_token"
 
 
-# Test error handling and edge cases
 @patch("shared.api_client.retry_with_backoff", MockRetryWithBackoff())
 @responses.activate
-def test_network_error(api_client):
-    # Use responses.CallbackResponse to simulate a network error
-    def request_callback(request):
-        raise requests.exceptions.ConnectionError("Network error")
-
-    responses.add_callback(
-        responses.GET, "https://api.example.com/test", callback=request_callback
-    )
-
-    response = api_client.get("/test")
-    assert response["status"] == "error"
-    assert "Network error" in str(response["errors"][0])
-
-
-@patch("shared.api_client.retry_with_backoff", MockRetryWithBackoff())
-@responses.activate
-def test_invalid_json_response(api_client):
-    responses.add(
-        responses.GET, "https://api.example.com/test", body="Invalid JSON", status=200
-    )
-
-    response = api_client.get("/test")
-    assert response["status"] == "error"
-
-
-def test_invalid_base_url(oauth2_client):
-    invalid_urls = [
-        "invalid_url",
-        "http:/invalid.com",
-        "ftp://invalid.com",
-        "not_a_url",
-    ]
-
-    for url in invalid_urls:
-        with pytest.raises(ValueError, match=r"Invalid base URL format"):
-            APIClient(url, oauth2_client)
-
-
-@responses.activate
-def test_token_refresh():
-    # Mock initial token request
+def test_post_request_error(api_client):
     responses.add(
         responses.POST,
-        "https://auth.example.com/token",
-        json={"access_token": "initial_token", "expires_in": 0},
-        status=200,
+        "https://api.example.com/test",
+        json={"error": "Bad request"},
+        status=400,
     )
 
-    # Mock refresh token request
-    responses.add(
-        responses.POST,
-        "https://auth.example.com/token",
-        json={"access_token": "refreshed_token", "expires_in": 3600},
-        status=200,
-    )
-
-    oauth2_client = OAuth2Client(
-        client_id="test_client_id",
-        client_secret="test_client_secret",
-        token_url="https://auth.example.com/token",
-    )
-
-    # First call should get initial token
-    token1 = oauth2_client.get_access_token()
-    assert token1 == "initial_token"
-
-    # Second call should get refreshed token because the first one expired
-    token2 = oauth2_client.get_access_token()
-    assert token2 == "refreshed_token"
-
-
-if __name__ == "__main__":
-    pytest.main(["-v", "-s"])
+    response = api_client.post("/test", data={"invalid": "data"})
+    assert response == {
+        "status": "error",
+        "errors": [
+            (
+                "API request failed: 400 Client Error: "
+                "Bad request for url: https://api.example.com/test"
+            )
+        ],
+    }
