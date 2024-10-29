@@ -1,10 +1,12 @@
 import time
 from functools import wraps
-import random
-def retry_with_backoff(retries=3, backoff_in_seconds=1):
-    def decorator(func):
+from typing import Any, Callable
+
+
+def retry_with_backoff(retries: int = 3, backoff_in_seconds: int = 1) -> Callable:
+    def decorator(func: Callable) -> Callable:
         @wraps(func)
-        def wrapper(*args, **kwargs):
+        def wrapper(*args: Any, **kwargs: Any) -> Any:
             x = 0
             while True:
                 try:
@@ -12,9 +14,10 @@ def retry_with_backoff(retries=3, backoff_in_seconds=1):
                 except Exception as e:
                     if x == retries:
                         raise e
-                    sleep = (backoff_in_seconds * 2 ** x + 
-                             random.uniform(0, 1))
+                    sleep = backoff_in_seconds * 2**x
                     time.sleep(sleep)
                     x += 1
+
         return wrapper
+
     return decorator
