@@ -1,17 +1,18 @@
-import pytest
-from unittest.mock import AsyncMock
 from datetime import date, datetime
+from unittest.mock import AsyncMock
 
-from services.flight_service.services.flight_service import FlightService
+import pytest
+
+from services.flight_service.core.constants import (CabinClass, Gender,
+                                                    PassengerType,
+                                                    ProviderName)
+from services.flight_service.models.common import (FlightSegment, Passenger,
+                                                   PriceBreakdown)
 from services.flight_service.models.request import FlightSearchRequest
-from services.flight_service.models.response import FlightSearchResponse, FlightOffer
-from services.flight_service.models.common import Passenger, PriceBreakdown, FlightSegment
-from services.flight_service.core.constants import (
-    ProviderName, 
-    PassengerType, 
-    Gender, 
-    CabinClass
-)
+from services.flight_service.models.response import (FlightOffer,
+                                                     FlightSearchResponse)
+from services.flight_service.services.flight_service import FlightService
+
 
 @pytest.fixture
 def flight_service():
@@ -19,6 +20,7 @@ def flight_service():
     service.cache = AsyncMock()
     service.cache.get.return_value = None
     return service
+
 
 @pytest.mark.asyncio
 async def test_search_flights(flight_service):
@@ -36,23 +38,17 @@ async def test_search_flights(flight_service):
                 arrival_time=datetime.now(),
                 duration="2h",
                 cabin_class=CabinClass.ECONOMY,
-                available_seats=10
+                available_seats=10,
             )
         ],
-        price=PriceBreakdown(
-            base_fare=100.0,
-            taxes=20.0,
-            total=120.0
-        ),
+        price=PriceBreakdown(base_fare=100.0, taxes=20.0, total=120.0),
         refundable=True,
-        available_seats=10
+        available_seats=10,
     )
 
     # Mock response data
     mock_response = FlightSearchResponse(
-        offers=[mock_offer],
-        currency="BDT",
-        search_id="test-search-id"
+        offers=[mock_offer], currency="BDT", search_id="test-search-id"
     )
 
     # Mock provider client
@@ -60,9 +56,7 @@ async def test_search_flights(flight_service):
     mock_provider.search_flights.return_value = mock_response
 
     # Set up mock providers - Only use one provider for test
-    flight_service.providers = {
-        ProviderName.FLYHUB: mock_provider
-    }
+    flight_service.providers = {ProviderName.FLYHUB: mock_provider}
 
     # Create test request
     request = FlightSearchRequest(
@@ -82,14 +76,16 @@ async def test_search_flights(flight_service):
                 nationality="BD",
                 contact_number="1234567890",
                 email="john@example.com",
-                is_lead_passenger=True
+                is_lead_passenger=True,
             )
         ],
-        cabin_class=CabinClass.ECONOMY
+        cabin_class=CabinClass.ECONOMY,
     )
 
     # Test search
-    response = await flight_service.search_flights(request, providers=[ProviderName.FLYHUB])
+    response = await flight_service.search_flights(
+        request, providers=[ProviderName.FLYHUB]
+    )
     assert isinstance(response, FlightSearchResponse)
     assert response.currency == "BDT"
     assert len(response.offers) == 1

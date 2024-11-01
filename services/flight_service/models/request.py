@@ -1,7 +1,10 @@
 from datetime import date
 from typing import List, Optional
+
 from pydantic import BaseModel, EmailStr, constr
-from .common import Passenger, CabinClass
+
+from .common import CabinClass, Passenger
+
 
 class FlightSearchRequest(BaseModel):
     origin: constr(min_length=3, max_length=3)
@@ -11,13 +14,16 @@ class FlightSearchRequest(BaseModel):
     passengers: List[Passenger]
     cabin_class: CabinClass
 
+
 class PricingRequest(BaseModel):
     search_id: str
     result_id: str
 
+
 class BookingRequest(BaseModel):
     offer_id: str
     passengers: List[Passenger]
+
 
 class CancelBookingRequest(BaseModel):
     booking_id: str

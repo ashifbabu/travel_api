@@ -1,21 +1,26 @@
-from enum import Enum
 from datetime import date, datetime
+from enum import Enum
 from typing import Optional
-from pydantic import BaseModel, EmailStr, field_validator, constr
+
+from pydantic import BaseModel, EmailStr, constr, field_validator
+
 
 class PassengerType(str, Enum):
     ADULT = "ADT"
     CHILD = "CHD"
     INFANT = "INF"
 
+
 class Gender(str, Enum):
     MALE = "M"
     FEMALE = "F"
+
 
 class CabinClass(str, Enum):
     ECONOMY = "Y"
     BUSINESS = "C"
     FIRST = "F"
+
 
 class Passenger(BaseModel):
     title: str
@@ -37,6 +42,7 @@ class Passenger(BaseModel):
     ff_airline: Optional[str] = None
     ff_number: Optional[str] = None
 
+
 class FlightSegment(BaseModel):
     airline: str
     flight_number: str
@@ -47,6 +53,7 @@ class FlightSegment(BaseModel):
     duration: str
     cabin_class: CabinClass
     available_seats: int
+
 
 class PriceBreakdown(BaseModel):
     base_fare: float

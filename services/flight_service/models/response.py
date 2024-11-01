@@ -1,8 +1,11 @@
 from datetime import datetime
 from typing import List, Optional
+
 from pydantic import BaseModel
-from .common import FlightSegment, PriceBreakdown, Passenger
+
 from ..core.constants import BookingStatus
+from .common import FlightSegment, Passenger, PriceBreakdown
+
 
 class FlightOffer(BaseModel):
     offer_id: str
@@ -12,10 +15,12 @@ class FlightOffer(BaseModel):
     refundable: bool
     available_seats: int
 
+
 class FlightSearchResponse(BaseModel):
     offers: List[FlightOffer] = []
     currency: str = "BDT"
     search_id: str
+
 
 class BookingResponse(BaseModel):
     booking_id: str
@@ -27,11 +32,13 @@ class BookingResponse(BaseModel):
     created_at: datetime
     expires_at: Optional[datetime] = None
 
+
 class PricingResponse(BaseModel):
     offer_id: str
     price: PriceBreakdown
     is_price_changed: bool
     is_available: bool
+
 
 class CancelBookingResponse(BaseModel):
     booking_id: str

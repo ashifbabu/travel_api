@@ -1,32 +1,38 @@
-import pytest
 from datetime import date
-from services.flight_service.utils.cache import Cache
-from services.flight_service.utils.validators import validate_search_request, validate_passenger
-from services.flight_service.models.request import FlightSearchRequest
+
+import pytest
+
+from services.flight_service.core.constants import (CabinClass, Gender,
+                                                    PassengerType)
 from services.flight_service.models.common import Passenger
-from services.flight_service.core.constants import PassengerType, Gender, CabinClass
+from services.flight_service.models.request import FlightSearchRequest
+from services.flight_service.utils.cache import Cache
+from services.flight_service.utils.validators import (validate_passenger,
+                                                      validate_search_request)
+
 
 @pytest.mark.asyncio
 async def test_cache():
     cache = Cache()
     key = "test_key"
     value = {"test": "data"}
-    
+
     # Test set
     success = await cache.set(key, value)
     assert success is True
-    
+
     # Test get
     cached_value = await cache.get(key)
     assert cached_value == value
-    
+
     # Test delete
     success = await cache.delete(key)
     assert success is True
-    
+
     # Test get after delete
     cached_value = await cache.get(key)
     assert cached_value is None
+
 
 def test_validators():
     # Test search request validation
@@ -47,10 +53,10 @@ def test_validators():
                 nationality="BD",
                 contact_number="1234567890",
                 email="john@example.com",
-                is_lead_passenger=True
+                is_lead_passenger=True,
             )
         ],
-        cabin_class=CabinClass.ECONOMY
+        cabin_class=CabinClass.ECONOMY,
     )
     errors = validate_search_request(request)
     assert len(errors) > 0
@@ -69,7 +75,7 @@ def test_validators():
         nationality="BD",
         contact_number="1234567890",
         email="john@example.com",
-        is_lead_passenger=True
+        is_lead_passenger=True,
     )
     errors = validate_passenger(passenger)
     assert len(errors) == 0
@@ -88,5 +94,5 @@ def test_validators():
             nationality="BD",
             contact_number="1234567890",
             email="invalid-email",  # Invalid email
-            is_lead_passenger=True
+            is_lead_passenger=True,
         )
