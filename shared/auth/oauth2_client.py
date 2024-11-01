@@ -1,13 +1,17 @@
-import requests
-from typing import Dict, Any, Optional
 from datetime import datetime, timedelta
+from typing import Any, Dict, Optional
+
+import requests
+
 from ..config import API_KEY, CLIENT_SECRET  # If using environment variables
 
 try:
     from ..secrets_manager import get_secret  # Optional AWS Secrets Manager
 except ImportError:
+
     def get_secret(name: str) -> str:
         return "dummy_secret_for_testing"
+
 
 class OAuth2Client:
     def __init__(self, client_id: str, client_secret: str, token_url: str):
@@ -19,19 +23,25 @@ class OAuth2Client:
 
     def _fetch_new_token(self) -> Dict[str, Any]:
         data = {
-            'grant_type': 'client_credentials',
-            'client_id': self.client_id,
-            'client_secret': self.client_secret
+            "grant_type": "client_credentials",
+            "client_id": self.client_id,
+            "client_secret": self.client_secret,
         }
         response = requests.post(self.token_url, data=data)
         response.raise_for_status()
         return response.json()
 
     def get_access_token(self) -> str:
-        if self._access_token is None or self._token_expires_at is None or datetime.now() >= self._token_expires_at:
+        if (
+            self._access_token is None
+            or self._token_expires_at is None
+            or datetime.now() >= self._token_expires_at
+        ):
             token_data = self._fetch_new_token()
-            self._access_token = token_data['access_token']
-            self._token_expires_at = datetime.now() + timedelta(seconds=token_data['expires_in'])
+            self._access_token = token_data["access_token"]
+            self._token_expires_at = datetime.now() + timedelta(
+                seconds=token_data["expires_in"]
+            )
         return self._access_token
 
     def refresh_token(self):

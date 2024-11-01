@@ -1,0 +1,11 @@
+generator a better chance to gain enough entropy.
+gpg: directory 'C:\\Users\\theci\\AppData\\Roaming\\gnupg\\openpgp-revocs.d' created
+gpg: revocation certificate stored as 'C:\\Users\\theci\\AppData\\Roaming\\gnupg\\openpgp-revocs.d\\952D5D7047A1FA54983F3D481EC456A30E4DAAB4.rev'
+public and secret key created and signed.
+
+pub   rsa4096 2024-11-01 [SC]
+      952D5D7047A1FA54983F3D481EC456A30E4DAAB4
+uid                      Md Ashif Babu <md.asif.dev@gmail.com>
+sub   rsa4096 2024-11-01 [E]
+
+PS E:\Md Ashif Babu\Projects\travel_api> 
