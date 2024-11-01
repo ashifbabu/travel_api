@@ -38,3 +38,10 @@ ENV/
 .coverage
 htmlcov/
 .pytest_cache/
+
+# Flight Service
+services/flight_service/api/
+services/flight_service/core/
+services/flight_service/providers/
+services/flight_service/services/
+services/flight_service/utils/
